@@ -1,0 +1,1 @@
+(()=>{"use strict";console.log("run");console.log(3),document.body.innerText="runn"})();
