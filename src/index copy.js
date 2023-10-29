@@ -1,15 +1,10 @@
-import sum from "../sum"
 import Gameboard from "./gameboard.js";
 import Ship from "./battleship.js";
-// const board = new Gameboard();
-// const secondary = new Gameboard();
+const board = new Gameboard();
+const secondary = new Gameboard();
 
-let foo = sum(1, 2);
-console.log(foo)
-document.body.innerText = "runn"
-console.log("run")
-
-
+const grid = document.querySelector('.grid');
+grid.textContent = "assss"
 class Player {
     constructor(x, y) {
         this.playBoard = x;
@@ -17,7 +12,14 @@ class Player {
         this.turn = null;
         this.boats = []
     }
+
+
 }
+
+const Player1 = new Player(board, secondary)
+
+const destroyer = new Ship(2, [1, 2])
+
 class ComputerPlayer {
     constructor(gameboard) {
         this.playerGameBoard = gameboard;
@@ -61,9 +63,5 @@ class ComputerPlayer {
         return false; // Not overlapping
     }
 }
-
-
-const boat = new Ship("H", 1, [[1, 2]]);
-// const computerPlayer = new ComputerPlayer(board);
-// const Player1 = new Player(board, secondary);
-console.log(boat)
+const computerPlayer = new ComputerPlayer(board)
+console.log("yes")
