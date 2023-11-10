@@ -5,11 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battleship</title>
+    <script src="./gameboard.bundle.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="foo">asss</div>
-    <script src="main.js"></script>
+    <table id="grid"></table>
+    <div class="foo"></div>
+    <div id="button-container">
+        <!-- Buttons will be added here -->
+    </div>
+    <div class="ships-container" id="ships-container">
+        <div class="ship" draggable="true" data-ship-type="destroyer" data-length="2" data-angle="H">
+            Destroyer
+            <div class="switch-angle" data-angle="H">H</div>
+        </div>
+        <div class="ship" draggable="true" data-ship-type="submarine" data-length="3" data-angle="H">
+            Submarine
+            <div class="switch-angle" data-angle="H">H</div>
+        </div>
+        <div class="ship" draggable="true" data-ship-type="cruiser" data-length="4" data-angle="H">
+            Cruiser
+            <div class="switch-angle" data-angle="H">H</div>
+        </div>
+    </div>
+
+
+    <div id="grid" class="grid"></div>
+
+
+    <div class="ui-box">
+
+    </div>
+    <script src="./index.bundle.js"></script>
 </body>
 
 </html>
