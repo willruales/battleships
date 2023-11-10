@@ -1,0 +1,49 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.boat-cell {
+    background-color: red;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.ships-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.ship {
+    width: 40px;
+    height: 40px;
+    background-color: #3498db;
+    border: 1px solid #2980b9;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.rotate {
+    transform: rotate(90deg);
+}
+
+.hover-highligh {
+    background-color: aquamarine;
+}
+
+.drag-over {
+    background-color: tomato;
+}
