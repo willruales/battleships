@@ -1,51 +1,52 @@
 import Ship from "./battleship";
 
 export default class Gameboard {
-    constructor() {
+    constructor(playerType) {
+        this.playerType = playerType;
+
         this.twoDArray = Array.from({ length: 8 }, () => Array(8).fill(0));
+        this.table = document.createElement('table');
         this.gridContainer = document.getElementById("grid");
         this.createGrid();
-        this.addClickEventListeners();
         this.shipDestroyer = document.querySelector(".ship-destroyer");
-        this.clickedCoordinates = []; // Array to store click event coordinates
+        this.clickedCoordinates = [];
         this.shipsPlaced = 0; // Keep track of the number of ships placed
         this.isFinishedPromise = new Promise((resolve) => {
             this.resolvePromise = resolve;
         });
         this.previousAttacks = new Set(); // Set to store previously attacked coordinates
+        if (this.playerType === 'computer') {
+            this.addClickEventListeners();
+        }
     }
     createGrid() {
 
         for (var i = 0; i < 8; i++) {
-            var row = this.gridContainer.insertRow(i);
+            // Add a new row to the table
+            var row = this.table.insertRow(i);
+
             for (var j = 0; j < 8; j++) {
+                // Add a cell to the current row
                 var cell = row.insertCell(j);
-                cell.classList.add("grid-item")
+                cell.classList.add("grid-item");
                 cell.dataset.row = i;
                 cell.dataset.column = j;
             }
         }
+
+        // Append the table to the grid container
+        this.gridContainer.appendChild(this.table);
     }
 
     addClickEventListeners() {
-        this.gridContainer.addEventListener('mouseup', (event) => {
+        this.table.addEventListener('mouseup', (event) => {
             if (event.target.classList.contains('grid-item')) {
                 const row = parseInt(event.target.dataset.row);
                 const column = parseInt(event.target.dataset.column);
-                const coordinates = [row, column];
+                this.clickedCoordinates = [row, column];
 
-                this.clickedCoordinates = coordinates; // Store coordinates in the array
-                this.clickedCoordinates = coordinates;
-                console.log('Selected Cell Coordinates:', coordinates, "this.clicked:", this.clickedCoordinates);
-
-                if (this.twoDArray[row][column] === 1) {
-                    this.twoDArray[row][column] = "X";
-                    console.log("Hit!");
-                } else {
-                    console.log("Miss!");
-                }
-
-
+                console.log('Selected Cell Coordinates:', this.clickedCoordinates);
+                this.receiveAttack1();
             }
         });
     }
@@ -63,7 +64,7 @@ export default class Gameboard {
             for (let i = 0; i < length; i++) {
                 this.twoDArray[row][col + i] = 1;
                 if (shouldAddClass) {
-                    const cell = this.gridContainer.rows[row].cells[col + i];
+                    const cell = this.table.querySelector(`[data-row="${row}"][data-column="${col + i}"]`);
                     cell.classList.add('boat-cell'); // Add a CSS class to style the boat cell
                 }
             }
@@ -76,7 +77,7 @@ export default class Gameboard {
             for (let i = 0; i < length; i++) {
                 this.twoDArray[row + i][col] = 1;
                 if (shouldAddClass) {
-                    const cell = this.gridContainer.rows[row + i].cells[col];
+                    const cell = this.table.querySelector(`[data-row="${row + i}"][data-column="${col}"]`);
                     cell.classList.add('boat-cell'); // Add a CSS class to style the boat cell
                 }
             }
@@ -105,20 +106,6 @@ export default class Gameboard {
             });
         }
     }
-
-
-
-    recieveAttack(x) {
-        if (this.twoDArray[x[0]][x[1]] === 1) {
-            this.twoDArray[x[0]][x[1]] = "X"
-            return "hit!"
-        }
-        else if (this.twoDArray[x[0]][x[1]] === 0) {
-            return "miss!";
-        }
-
-
-    }
     run() {
         return "this.clickedCoordinates";
     }
@@ -131,7 +118,6 @@ export default class Gameboard {
     }
 
     check() {
-        // Return the array of click event coordinates
         return this.clickedCoordinates;
     }
 
@@ -149,7 +135,6 @@ export default class Gameboard {
                 const row = Math.floor(Math.random() * 8);
                 const col = Math.floor(Math.random() * 8);
 
-                // Randomly choose orientation, ensuring it fits within the game board's boundaries
                 const orientation = Math.random() < 0.5 && col + ship.length <= 8 ? 'H' : 'V';
 
                 if (this.placeBoat(new Ship(orientation, ship.length, [row, col]), true)) {
@@ -160,37 +145,41 @@ export default class Gameboard {
         }
     }
 
-    receiveAttack() {
-        // Function to generate a random coordinate [row, col] within the 8x8 grid
-        const generateRandomCoordinate = () => {
-            const row = Math.floor(Math.random() * 8);
-            const col = Math.floor(Math.random() * 8);
-            return [row, col];
-        };
+    async receiveRandomAttack() {
+        return new Promise(resolve => { console.log("it works"), resolve("this hides in resolve") })
+        // const generateRandomCoordinate = () => {
+        //     const row = Math.floor(Math.random() * 8);
+        //     const col = Math.floor(Math.random() * 8);
+        //     return [row, col];
+        // };
 
-        let coordinate;
-        do {
-            coordinate = generateRandomCoordinate();
-        } while (this.previousAttacks.has(coordinate)); // Ensure the coordinate hasn't been attacked before
+        // let coordinate;
+        // do {
+        //     coordinate = generateRandomCoordinate();
+        // } while (this.previousAttacks.has(coordinate)); // Ensure the coordinate hasn't been attacked before
 
-        this.previousAttacks.add(coordinate);
+        // this.previousAttacks.add(coordinate);
 
-        const [row, col] = coordinate;
-        if (this.twoDArray[row][col] === 1) {
-            this.twoDArray[row][col] = "X";
-            console.log("Hit!");
-        } else {
-            console.log("Miss!");
-        }
+        // const [row, col] = coordinate;
+        // if (this.twoDArray[row][col] === 1) {
+        //     this.twoDArray[row][col] = "X";
+        //     console.log("Hit!!");
+        // } else {
+        //     console.log("Miss!!");
+        // }
     }
     receiveAttack1() {
+        console.log("goes");
         const [row, col] = this.clickedCoordinates;
-        if (this.twoDArray[row][col] === 1) {
-            this.twoDArray[row][col] = "X";
-            console.log("Hit!");
-        } else {
-            console.log("Miss!");
-        }
+        console.log(this.clickedCoordinates);
 
+        if (row !== undefined && col !== undefined && this.twoDArray[row][col] === 1) {
+            this.twoDArray[row][col] = "X";
+            console.log("player makes a Hit!!!");
+        } else {
+            console.log("player makes a Miss!!!");
+        }
     }
+
+
 }

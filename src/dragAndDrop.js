@@ -1,6 +1,5 @@
 import Ship from "./battleship.js";
 import Gameboard from "./gameboard.js";
-const player1 = new Gameboard();
 function disableShipDrag(x) {
     x.setAttribute("draggable", "false");
     x.classList.add("placed-ship");
@@ -8,6 +7,41 @@ function disableShipDrag(x) {
 
 
 export function setupDragAndDrop() {
+    const player1 = new Gameboard("user");
+    player1.receiveRandomAttack = function () {
+
+
+
+
+        const generateRandomCoordinate = () => {
+            const row = Math.floor(Math.random() * 8);
+            const col = Math.floor(Math.random() * 8);
+            return [row, col];
+        };
+
+        let coordinate;
+        do {
+            coordinate = generateRandomCoordinate();
+        } while (this.previousAttacks.has(coordinate)); // Ensure the coordinate hasn't been attacked before
+
+        this.previousAttacks.add(coordinate);
+
+        // const [row, col] = coordinate;
+        // if (this.twoDArray[row][col] === 1) {
+        //     this.twoDArray[row][col] = "X";
+        //     console.log("Hit!! drag");
+        // } else {
+        //     console.log("Miss!! drop");
+        // }
+
+
+
+
+
+
+
+    };
+
     const ships = document.querySelectorAll(".ship");
     let currentShip = null;
     const grid = document.getElementById("grid");
