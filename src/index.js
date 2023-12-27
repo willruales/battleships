@@ -25,22 +25,46 @@ shipsContainer.addEventListener("click", function (event) {
 });
 console.log(player1)
 
-player1.waitForFinish().then(() => {
-    console.log("Instance is finished¬¬!");
-    createButton("Play", function (resolve) {
-        alert(resolve, "Play button clicked");
-        computerPlayer = new Gameboard("computer")
-        computerPlayer.placeRandomShips();
+async function foobar() {
+    return new Promise((resolve) => {
+        computerPlayer.table.addEventListener('mouseup', async (event) => {
+            if (event.target.classList.contains('grid-item')) {
+                const row = parseInt(event.target.dataset.row);
+                const column = parseInt(event.target.dataset.column);
+                computerPlayer.clickedCoordinates = [row, column];
 
-        console.log(computerPlayer, "look")
+                console.log('Selected Cell Coordinates:', computerPlayer.clickedCoordinates);
+
+                await computerPlayer.receiveAttack1();
+            }
+
+            await player1.receiveRandomAttack()
+            resolve();
+        });
+    });
+}
+
+player1.waitForFinish().then(() => {
+    console.log("Instance is finished!");
+    computerPlayer = new Gameboard("computer");
+    computerPlayer.placeRandomShips();
+
+    createButton("Play", async function (resolve) {
+        // Add your logic here
+        // If this function is asynchronous, handle it accordingly
     });
 
     createButton("Reset", function () {
         alert("Reset button clicked");
         // Add your reset logic here
     });
-    return player1.receiveRandomAttack()
-})
+
+    // Start the asynchronous operations in foobar
+    return foobar();
+}).catch(error => {
+    console.error("An error occurred:", error);
+});
+
 
 // .then(finalResult => {
 //     console.log(finalResult);

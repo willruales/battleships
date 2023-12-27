@@ -15,9 +15,9 @@ export default class Gameboard {
             this.resolvePromise = resolve;
         });
         this.previousAttacks = new Set(); // Set to store previously attacked coordinates
-        if (this.playerType === 'computer') {
-            this.addClickEventListeners();
-        }
+        // if (this.playerType === 'computer') {
+        //     this.addClickEventListeners();
+        // }
     }
     createGrid() {
 
@@ -46,6 +46,7 @@ export default class Gameboard {
                 this.clickedCoordinates = [row, column];
 
                 console.log('Selected Cell Coordinates:', this.clickedCoordinates);
+
                 this.receiveAttack1();
             }
         });
@@ -107,9 +108,11 @@ export default class Gameboard {
         }
     }
     run() {
-        return "this.clickedCoordinates";
+        return new Promise((resolve) => { console.log("2nd promise"), resolve("as") });
     }
-
+    foo() {
+        return new Promise((resolve) => { console.log("3rd promise"), resolve("as") });
+    }
 
     findEngGame() {
         const flattenedArray = this.twoDArray.flat(); // Flatten the 2D array
@@ -145,39 +148,43 @@ export default class Gameboard {
         }
     }
 
-    async receiveRandomAttack() {
-        return new Promise(resolve => { console.log("it works"), resolve("this hides in resolve") })
-        // const generateRandomCoordinate = () => {
-        //     const row = Math.floor(Math.random() * 8);
-        //     const col = Math.floor(Math.random() * 8);
-        //     return [row, col];
-        // };
+    receiveRandomAttack() {
+        return new Promise((resolve) => {
+            const generateRandomCoordinate = () => {
+                const row = Math.floor(Math.random() * 8);
+                const col = Math.floor(Math.random() * 8);
+                return [row, col];
+            };
 
-        // let coordinate;
-        // do {
-        //     coordinate = generateRandomCoordinate();
-        // } while (this.previousAttacks.has(coordinate)); // Ensure the coordinate hasn't been attacked before
+            console.log("Works"); // Log statement for testing
 
-        // this.previousAttacks.add(coordinate);
+            let coordinate;
+            do {
+                coordinate = generateRandomCoordinate();
+            } while (this.previousAttacks.has(coordinate)); // Ensure the coordinate hasn't been attacked before
 
-        // const [row, col] = coordinate;
-        // if (this.twoDArray[row][col] === 1) {
-        //     this.twoDArray[row][col] = "X";
-        //     console.log("Hit!!");
-        // } else {
-        //     console.log("Miss!!");
-        // }
+            this.previousAttacks.add(coordinate);
+
+            const [row, col] = coordinate;
+            if (this.twoDArray[row][col] === 1) {
+                this.twoDArray[row][col] = "X";
+                console.log("Computer makes a Hit!!"); // Corrected log statement
+                resolve("Computer makes a Hit!!");
+            } else {
+                console.log("Computer makes a Miss!!"); // Corrected log statement
+                resolve("Computer makes a Miss!!");
+            }
+        });
     }
     receiveAttack1() {
-        console.log("goes");
         const [row, col] = this.clickedCoordinates;
         console.log(this.clickedCoordinates);
 
-        if (row !== undefined && col !== undefined && this.twoDArray[row][col] === 1) {
+        if (this.twoDArray[row][col] === 1) {
             this.twoDArray[row][col] = "X";
-            console.log("player makes a Hit!!!");
+            console.log("Player makes a Hit!!!");
         } else {
-            console.log("player makes a Miss!!!");
+            console.log("Player makes a Miss!!!");
         }
     }
 
