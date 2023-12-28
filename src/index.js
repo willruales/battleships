@@ -35,10 +35,14 @@ async function foobar() {
 
                 console.log('Selected Cell Coordinates:', computerPlayer.clickedCoordinates);
 
-                await computerPlayer.receiveAttack1();
             }
+            try {
+                await computerPlayer.receiveAttack1();
+                await player1.receiveRandomAttack()
 
-            await player1.receiveRandomAttack()
+            } catch (error) { console.log(error) }
+
+
             resolve();
         });
     });

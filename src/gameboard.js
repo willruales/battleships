@@ -140,7 +140,7 @@ export default class Gameboard {
 
                 const orientation = Math.random() < 0.5 && col + ship.length <= 8 ? 'H' : 'V';
 
-                if (this.placeBoat(new Ship(orientation, ship.length, [row, col]), true)) {
+                if (this.placeBoat(new Ship(orientation, ship.length, [row, col]), false)) {
                     placed = true;
                 }
 
@@ -158,6 +158,7 @@ export default class Gameboard {
 
             // Corrected: Call generateRandomCoordinate to get the actual coordinates
             const [row, col] = generateRandomCoordinate();
+            const cell = this.table.querySelector(`[data-row="${row}"][data-column="${col}"]`);
 
             // Corrected: Use toString() on the coordinates array
             const coordinatesString = `${row},${col}`;
@@ -169,10 +170,12 @@ export default class Gameboard {
 
             if (this.twoDArray[row][col] === 1) {
                 this.twoDArray[row][col] = "X";
+                cell.style.background = "black"
                 console.log("Computer makes a Hit!!");
                 resolve("Computer makes a Hit!!");
             } else {
                 console.log("Computer makes a Miss!!");
+                cell.style.background = "blue"
                 resolve("Computer makes a Miss!!");
             }
 
@@ -183,26 +186,33 @@ export default class Gameboard {
 
     receiveAttack1() {
         const [row, col] = this.clickedCoordinates;
+        const cell = this.table.querySelector(`[data-row="${row}"][data-column="${col}"]`);
         const coordinatesString = `${row},${col}`;
-
-        // Check if the coordinates have been attacked before
-        if (this.previousAttacks.has(coordinatesString)) {
-            console.log("Already attacked these coordinates!");
-            return;
-        }
 
         console.log(this.clickedCoordinates);
 
-        if (this.twoDArray[row][col] === 1) {
-            this.twoDArray[row][col] = "X";
-            console.log("Player makes a Hit!!!");
-        } else {
-            console.log("Player makes a Miss!!!");
-        }
+        return new Promise((resolve, reject) => {
+            if (this.previousAttacks.has(coordinatesString)) {
+                reject("Already attacked these coordinates!");
+                return;
+            }
+            else {
+                if (this.twoDArray[row][col] === 1) {
+                    this.twoDArray[row][col] = "X";
+                    cell.style.background = "black"
 
-        // Add the coordinates to the set after checking
-        this.previousAttacks.add(coordinatesString);
-        // console.log(this.previousAttacks);
+                    console.log("Player makes a Hit!!!");
+                } else {
+                    console.log("Player makes a Miss!!!");
+                    cell.style.background = "blue"
+                }
+
+                this.previousAttacks.add(coordinatesString);
+
+
+                resolve("playermakes a move")
+            }
+        })
     }
 
 
