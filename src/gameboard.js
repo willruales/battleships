@@ -156,28 +156,41 @@ export default class Gameboard {
                 return [row, col];
             };
 
-            console.log("Works"); // Log statement for testing
+            // Corrected: Call generateRandomCoordinate to get the actual coordinates
+            const [row, col] = generateRandomCoordinate();
 
-            let coordinate;
-            do {
-                coordinate = generateRandomCoordinate();
-            } while (this.previousAttacks.has(coordinate)); // Ensure the coordinate hasn't been attacked before
+            // Corrected: Use toString() on the coordinates array
+            const coordinatesString = `${row},${col}`;
 
-            this.previousAttacks.add(coordinate);
+            if (this.previousAttacks.has(coordinatesString)) {
+                console.log("Already attacked these coordinates!");
+                return;
+            }
 
-            const [row, col] = coordinate;
             if (this.twoDArray[row][col] === 1) {
                 this.twoDArray[row][col] = "X";
-                console.log("Computer makes a Hit!!"); // Corrected log statement
+                console.log("Computer makes a Hit!!");
                 resolve("Computer makes a Hit!!");
             } else {
-                console.log("Computer makes a Miss!!"); // Corrected log statement
+                console.log("Computer makes a Miss!!");
                 resolve("Computer makes a Miss!!");
             }
+
+            console.log(this.previousAttacks);
+            this.previousAttacks.add(coordinatesString);
         });
     }
+
     receiveAttack1() {
         const [row, col] = this.clickedCoordinates;
+        const coordinatesString = `${row},${col}`;
+
+        // Check if the coordinates have been attacked before
+        if (this.previousAttacks.has(coordinatesString)) {
+            console.log("Already attacked these coordinates!");
+            return;
+        }
+
         console.log(this.clickedCoordinates);
 
         if (this.twoDArray[row][col] === 1) {
@@ -186,6 +199,10 @@ export default class Gameboard {
         } else {
             console.log("Player makes a Miss!!!");
         }
+
+        // Add the coordinates to the set after checking
+        this.previousAttacks.add(coordinatesString);
+        // console.log(this.previousAttacks);
     }
 
 
