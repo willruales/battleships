@@ -38,7 +38,14 @@ export function setupDragAndDrop() {
 
 
     // };
+    function resetDragAndDrop() {
+        const ships = document.querySelectorAll(".placed-ship");
 
+        ships.forEach((ship) => {
+            ship.setAttribute("draggable", "true");
+            ship.classList.remove("placed-ship");
+        });
+    }
     const ships = document.querySelectorAll(".ship");
     let currentShip = null;
     const grid = document.getElementById("grid");
@@ -71,8 +78,9 @@ export function setupDragAndDrop() {
         e.preventDefault();
         const shipLength = currentShip.getAttribute("data-length");
         const shipAngle = currentShip.getAttribute("data-angle");
-        console.log(shipAngle, shipLength);
+        // console.log(shipAngle, shipLength);
         if (e.dataTransfer.getData("text/plain") === "dragged" && shipLength) {
+
             const x = e.clientX - grid.getBoundingClientRect().left;
             const y = e.clientY - grid.getBoundingClientRect().top;
 
@@ -83,7 +91,7 @@ export function setupDragAndDrop() {
             // Create a new Ship and place it on the grid
             const newShip = new Ship(shipAngle, parseInt(shipLength), dragCoords);
 
-            console.log(newShip);
+            // console.log(newShip);
 
             const boatPlaced = player1.placeBoat(newShip);
             if (boatPlaced) {
@@ -95,5 +103,8 @@ export function setupDragAndDrop() {
         }
     });
 
-    return player1
+    return {
+        player: player1,
+        resetDragAndDrop: resetDragAndDrop
+    };
 }

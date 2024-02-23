@@ -2,7 +2,12 @@ import Gameboard from "./gameboard.js";
 import { setupDragAndDrop } from './dragAndDrop';
 import createButton from './play-reset';
 
-const player1 = setupDragAndDrop();
+const gameSetup = setupDragAndDrop();
+const player1 = gameSetup.player;
+let firstTrueResult = null;
+
+//const player1 = setupDragAndDrop();
+const grid = document.getElementById("grid")
 let computerPlayer;
 const shipsContainer = document.getElementById("ships-container");
 //const allShips = setupDragAndDrop();
@@ -26,25 +31,35 @@ shipsContainer.addEventListener("click", function (event) {
 console.log(player1)
 
 async function foobar() {
-    return new Promise((resolve) => {
-        computerPlayer.table.addEventListener('mouseup', async (event) => {
+    return new Promise(async (resolve) => {
+        const handleMouseUp = async (event) => {
             if (event.target.classList.contains('grid-item')) {
                 const row = parseInt(event.target.dataset.row);
                 const column = parseInt(event.target.dataset.column);
                 computerPlayer.clickedCoordinates = [row, column];
 
-                console.log('Selected Cell Coordinates:', computerPlayer.clickedCoordinates);
+                try {
+                    const result = await computerPlayer.receiveAttack1();
+                    const result2 = await player1.receiveRandomAttack();
 
+                    // Find the first result that is true
+                    firstTrueResult = result === true ? 'result' : result2 === true ? 'result2' : null;
+
+                    if (firstTrueResult !== null) {
+                        console.log("First function that returned true:", firstTrueResult);
+                    } else {
+                        console.log("Neither function returned true");
+                    }
+
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+
+                resolve();
             }
-            try {
-                await computerPlayer.receiveAttack1();
-                await player1.receiveRandomAttack()
+        };
 
-            } catch (error) { console.log(error) }
-
-
-            resolve();
-        });
+        computerPlayer.table.addEventListener('mouseup', handleMouseUp);
     });
 }
 
@@ -60,7 +75,10 @@ player1.waitForFinish().then(() => {
 
     createButton("Reset", function () {
         alert("Reset button clicked");
-        // Add your reset logic here
+        computerPlayer.resetGame();
+        player1.resetGame();
+
+        player1.clearGrid()
     });
 
     // Start the asynchronous operations in foobar

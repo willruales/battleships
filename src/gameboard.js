@@ -35,8 +35,38 @@ export default class Gameboard {
         }
 
         // Append the table to the grid container
+        this.table.classList.add('computerBoard');
         this.gridContainer.appendChild(this.table);
     }
+    resetGame() {
+        // Implement logic to reset the game board and any other necessary state
+        this.twoDArray = Array.from({ length: 8 }, () => Array(8).fill(0));
+        this.shipsPlaced = 0;
+        this.clearGrid();
+        this.table.classList.remove('computerBoard');
+
+        // this.createGrid();
+        // Additional reset logic as needed
+    }
+    clearGrid() {
+        // Iterate over each row
+        for (var i = 0; i < 8; i++) {
+            // Get the current row
+            var row = this.table.rows[i];
+
+            // Iterate over each cell in the current row
+            for (var j = 0; j < 8; j++) {
+                // Get the current cell
+                var cell = row.cells[j];
+
+                // Clear the cell content or reset styles
+                cell.classList.remove("boat-cell");
+
+                // Additional reset logic as needed for other cell properties
+            }
+        }
+    }
+
 
     addClickEventListeners() {
         this.table.addEventListener('mouseup', (event) => {
@@ -114,11 +144,29 @@ export default class Gameboard {
         return new Promise((resolve) => { console.log("3rd promise"), resolve("as") });
     }
 
-    findEngGame() {
+    checkEndGame() {
         const flattenedArray = this.twoDArray.flat(); // Flatten the 2D array
         const countX = flattenedArray.filter(item => item === 'X').length;
-        return countX >= 6;
+
+        if (countX >= 2) {
+            if (confirm(`${this.playerType} wins! Play again?`)) {
+
+                this.table.removeChild(this.table.firstChild);
+                const ships = document.querySelectorAll(".placed-ship");
+
+                ships.forEach((ship) => {
+                    ship.setAttribute("draggable", "true");
+                    ship.classList.remove("placed-ship");
+                });
+                return true
+            }
+        } else {
+            // Do nothing!
+            console.log('game does nothing');
+        }
+
     }
+
 
     check() {
         return this.clickedCoordinates;
@@ -170,16 +218,15 @@ export default class Gameboard {
 
             if (this.twoDArray[row][col] === 1) {
                 this.twoDArray[row][col] = "X";
-                cell.style.background = "black"
-                console.log("Computer makes a Hit!!");
-                resolve("Computer makes a Hit!!");
+                cell.style.background = "black", console.log("Computer makes a Hit!!", this.twoDArray);
+                resolve(this.checkEndGame());
             } else {
-                console.log("Computer makes a Miss!!");
-                cell.style.background = "blue"
-                resolve("Computer makes a Miss!!");
+                console.log("Computer makes a Miss!!", this.twoDArray);
+                cell.style.background = "blue";
+                resolve();
             }
 
-            console.log(this.previousAttacks);
+            // console.log(this.previousAttacks);
             this.previousAttacks.add(coordinatesString);
         });
     }
@@ -199,18 +246,20 @@ export default class Gameboard {
             else {
                 if (this.twoDArray[row][col] === 1) {
                     this.twoDArray[row][col] = "X";
-                    cell.style.background = "black"
 
-                    console.log("Player makes a Hit!!!");
+
+                    console.log("Player makes a Hit!!!", this.twoDArray), cell.style.background = "black";
+                    resolve(this.checkEndGame(), "<-look")
                 } else {
-                    console.log("Player makes a Miss!!!");
+                    console.log("Player makes a Miss!!!", this.twoDArray);
                     cell.style.background = "blue"
+                    resolve()
                 }
 
                 this.previousAttacks.add(coordinatesString);
 
 
-                resolve("playermakes a move")
+                //resolve("playermakes a move")
             }
         })
     }
