@@ -35,7 +35,7 @@ export default class Gameboard {
         }
 
         // Append the table to the grid container
-        this.table.classList.add('computerBoard');
+        this.table.classList.add(`${this.playerType}`);
         this.gridContainer.appendChild(this.table);
     }
     resetGame() {
@@ -149,17 +149,19 @@ export default class Gameboard {
         const countX = flattenedArray.filter(item => item === 'X').length;
 
         if (countX >= 2) {
-            if (confirm(`${this.playerType} wins! Play again?`)) {
+            // if (confirm(`${this.playerType} wins! Play again?`)) {
 
-                this.table.removeChild(this.table.firstChild);
-                const ships = document.querySelectorAll(".placed-ship");
+            //     this.table.removeChild(this.table.firstChild);
+            //     const ships = document.querySelectorAll(".placed-ship");
 
-                ships.forEach((ship) => {
-                    ship.setAttribute("draggable", "true");
-                    ship.classList.remove("placed-ship");
-                });
-                return true
-            }
+            //     ships.forEach((ship) => {
+            //         ship.setAttribute("draggable", "true");
+            //         ship.classList.remove("placed-ship");
+            //     });
+            //     return true
+            // }
+
+            return true
         } else {
             // Do nothing!
             console.log('game does nothing');
